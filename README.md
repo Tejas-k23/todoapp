@@ -55,3 +55,8 @@ The login and signup pages open the MSG91 OTP widget and then send the returned 
 
 - This implementation assumes the MSG91 widget success callback is the source of truth for OTP verification.
 - For higher-security production flows, add server-side verification against the OTP provider before issuing your JWT.
+## Deployment Notes
+
+- Frontend Vercel config: `frontend/vercel.json`
+- Production frontend API URL: `https://todoapp-pk7k.onrender.com/api`
+- Make sure the backend CORS env includes your final frontend domain in `FRONTEND_URL` and `FRONTEND_URLS`
