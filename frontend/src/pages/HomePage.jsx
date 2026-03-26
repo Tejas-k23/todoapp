@@ -14,13 +14,13 @@ const features = [
     icon: "02",
   },
   {
-    title: "OTP access with less friction",
-    description: "Use your mobile number to sign in with the MSG91 widget instead of juggling passwords.",
+    title: "Simple mobile sign-in",
+    description: "Use your mobile number as your account identifier and get back into your planner quickly.",
     icon: "03",
   },
 ]
 
-const highlights = ["Offline-friendly PWA", "Focused day tabs", "Fast OTP onboarding"]
+const highlights = ["Offline-friendly PWA", "Focused day tabs", "Fast mobile sign-in"]
 
 export default function HomePage() {
   const { isAuthenticated } = useAuth()
@@ -35,20 +35,20 @@ export default function HomePage() {
         <div className="animate-fade-up">
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.28em] text-primary shadow-panel backdrop-blur">
             <span className="h-2 w-2 rounded-full bg-accent" />
-            Timetable+ Planner
+            Study Planner
           </div>
           <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-tight text-ink sm:text-5xl lg:text-6xl">
             A fresher, calmer timetable UI for planning your week.
           </h1>
           <p className="mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-            Organize classes, routines, and daily tasks in one place with a cleaner dashboard, better mobile spacing, and OTP-based access built around phone-first use.
+            Organize classes, routines, and daily tasks in one place with a cleaner dashboard, better mobile spacing, and phone-first account access.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link className="rounded-full bg-primary px-6 py-3 text-center font-semibold text-white shadow-float transition hover:bg-primary-dark" to="/signup">
               Start Free
             </Link>
             <Link className="rounded-full border border-primary/15 bg-white/80 px-6 py-3 text-center font-semibold text-primary shadow-panel transition hover:bg-white" to="/login">
-              Login with OTP
+              Login
             </Link>
           </div>
           <div className="mt-6 flex flex-wrap gap-2">
@@ -102,3 +102,4 @@ export default function HomePage() {
     </div>
   )
 }
+

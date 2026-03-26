@@ -1,6 +1,6 @@
 {
-  "name": "Timetable+",
-  "short_name": "Timetable+",
+  "name": "Study Planner",
+  "short_name": "Study Planner",
   "description": "Your personal task and schedule manager",
   "start_url": "/",
   "display": "standalone",
@@ -18,3 +18,4 @@
     { "src": "/icons/icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ]
 }
+
