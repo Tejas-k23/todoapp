@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react"
-import { Navigate, useNavigate } from "react-router-dom"
+import { Navigate } from "react-router-dom"
 
 function isInstalledPWA() {
   return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true
 }
 
 export default function InstallApp() {
-  const navigate = useNavigate()
   const [deferredPrompt, setDeferredPrompt] = useState(null)
   const [isInstalled, setIsInstalled] = useState(() => isInstalledPWA())
   const [isInstalling, setIsInstalling] = useState(false)
@@ -66,15 +65,15 @@ export default function InstallApp() {
             Download App
           </h1>
           <p className="mt-3 text-sm leading-7 text-slate-600 sm:text-base">
-            Install this app for a better experience
+            This website is install-first. To use the planner, please download the app on your device and open it from your home screen.
           </p>
 
           <div className="mt-8 rounded-[1.75rem] bg-[linear-gradient(145deg,#172033_0%,#0f766e_58%,#2dd4bf_100%)] p-5 text-white shadow-float">
             <p className="text-xs uppercase tracking-[0.28em] text-white/70">Why install</p>
             <div className="mt-4 space-y-3 text-sm leading-6 text-white/90">
-              <div className="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur">Open faster from your home screen with an app-like layout.</div>
-              <div className="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur">Keep the cleaner mobile experience without extra browser chrome.</div>
-              <div className="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur">Use the app more like a native planner on repeat visits.</div>
+              <div className="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur">Open directly from your home screen like a real app.</div>
+              <div className="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur">Use the planner without the normal browser bars and distractions.</div>
+              <div className="rounded-2xl bg-white/10 px-4 py-3 backdrop-blur">Unlock the full app experience after installation.</div>
             </div>
           </div>
 
@@ -91,18 +90,10 @@ export default function InstallApp() {
             <div className="mt-8 rounded-[1.5rem] border border-amber-200 bg-amber-50/90 p-4 text-sm leading-6 text-amber-950">
               <p className="font-semibold text-amber-900">Install prompt not available right now.</p>
               <p className="mt-2">
-                Open your browser menu and choose <span className="font-semibold">Install app</span> or <span className="font-semibold">Add to Home Screen</span> to install manually.
+                Open your browser menu and choose <span className="font-semibold">Install app</span> or <span className="font-semibold">Add to Home Screen</span>. After installation, open the app from your home screen to continue.
               </p>
             </div>
           )}
-
-          <button
-            className="mt-3 w-full rounded-full border border-primary/15 bg-white/80 px-5 py-3.5 text-sm font-semibold text-primary shadow-panel transition hover:bg-white"
-            onClick={() => navigate("/home")}
-            type="button"
-          >
-            Continue in Browser
-          </button>
         </section>
       </div>
     </div>

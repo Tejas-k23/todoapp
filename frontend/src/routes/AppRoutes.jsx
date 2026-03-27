@@ -16,6 +16,36 @@ function isInstalledPWA() {
   return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true
 }
 
+function RequireInstalledApp({ children }) {
+  const [isInstalled, setIsInstalled] = useState(() => isInstalledPWA())
+
+  useEffect(() => {
+    function handleAppInstalled() {
+      setIsInstalled(true)
+    }
+
+    const mediaQuery = window.matchMedia("(display-mode: standalone)")
+
+    function handleDisplayModeChange(event) {
+      setIsInstalled(event.matches || window.navigator.standalone === true)
+    }
+
+    window.addEventListener("appinstalled", handleAppInstalled)
+    mediaQuery.addEventListener?.("change", handleDisplayModeChange)
+
+    return () => {
+      window.removeEventListener("appinstalled", handleAppInstalled)
+      mediaQuery.removeEventListener?.("change", handleDisplayModeChange)
+    }
+  }, [])
+
+  if (!isInstalled) {
+    return <Navigate replace to="/install" />
+  }
+
+  return children
+}
+
 function SmartEntryRedirect() {
   const [redirectPath, setRedirectPath] = useState(null)
 
@@ -36,12 +66,12 @@ export default function AppRoutes() {
       <Routes>
         <Route element={<SmartEntryRedirect />} path="/" />
         <Route element={<InstallApp />} path="/install" />
-        <Route element={<HomePage />} path="/home" />
-        <Route element={<LoginPage />} path="/login" />
-        <Route element={<SignupPage />} path="/signup" />
-        <Route element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} path="/dashboard" />
-        <Route element={<ProtectedRoute><ListingPage /></ProtectedRoute>} path="/tasks" />
-        <Route element={<ProtectedRoute><DetailPage /></ProtectedRoute>} path="/tasks/:id" />
+        <Route element={<RequireInstalledApp><HomePage /></RequireInstalledApp>} path="/home" />
+        <Route element={<RequireInstalledApp><LoginPage /></RequireInstalledApp>} path="/login" />
+        <Route element={<RequireInstalledApp><SignupPage /></RequireInstalledApp>} path="/signup" />
+        <Route element={<RequireInstalledApp><ProtectedRoute><DashboardPage /></ProtectedRoute></RequireInstalledApp>} path="/dashboard" />
+        <Route element={<RequireInstalledApp><ProtectedRoute><ListingPage /></ProtectedRoute></RequireInstalledApp>} path="/tasks" />
+        <Route element={<RequireInstalledApp><ProtectedRoute><DetailPage /></ProtectedRoute></RequireInstalledApp>} path="/tasks/:id" />
         <Route element={<Navigate replace to="/" />} path="*" />
       </Routes>
     </Suspense>

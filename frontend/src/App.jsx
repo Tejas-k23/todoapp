@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react"
 import { BrowserRouter, useLocation } from "react-router-dom"
 
 import BottomNav from "./components/common/BottomNav"
@@ -7,9 +8,35 @@ import { AuthProvider } from "./context/AuthContext"
 import { ToastProvider } from "./context/ToastContext"
 import AppRoutes from "./routes/AppRoutes"
 
+function isInstalledPWA() {
+  return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true
+}
+
 function AppShell() {
   const location = useLocation()
-  const showNavigation = location.pathname !== "/install"
+  const [isInstalled, setIsInstalled] = useState(() => isInstalledPWA())
+
+  useEffect(() => {
+    function handleAppInstalled() {
+      setIsInstalled(true)
+    }
+
+    const mediaQuery = window.matchMedia("(display-mode: standalone)")
+
+    function handleDisplayModeChange(event) {
+      setIsInstalled(event.matches || window.navigator.standalone === true)
+    }
+
+    window.addEventListener("appinstalled", handleAppInstalled)
+    mediaQuery.addEventListener?.("change", handleDisplayModeChange)
+
+    return () => {
+      window.removeEventListener("appinstalled", handleAppInstalled)
+      mediaQuery.removeEventListener?.("change", handleDisplayModeChange)
+    }
+  }, [])
+
+  const showNavigation = isInstalled && location.pathname !== "/install"
 
   return (
     <AuthProvider>
