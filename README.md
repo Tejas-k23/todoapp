@@ -1,6 +1,6 @@
 # Timetable+ PWA
 
-Timetable+ is a full-stack Progressive Web App built with React + Vite on the frontend and FastAPI + MongoDB on the backend. It uses a simple name + password login with JWT sessions.
+Timetable+ is a full-stack Progressive Web App built with React + Vite on the frontend and FastAPI + MongoDB on the backend. It runs as an open shared planner with no login required.
 
 ## Project Structure
 

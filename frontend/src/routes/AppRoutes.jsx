@@ -2,12 +2,8 @@ import { Suspense, lazy, useEffect, useState } from "react"
 import { Navigate, Route, Routes } from "react-router-dom"
 
 import LoadingSpinner from "../components/common/LoadingSpinner"
-import ProtectedRoute from "../components/common/ProtectedRoute"
-
 const HomePage = lazy(() => import("../pages/HomePage"))
 const InstallApp = lazy(() => import("../pages/InstallApp"))
-const LoginPage = lazy(() => import("../pages/LoginPage"))
-const SignupPage = lazy(() => import("../pages/SignupPage"))
 const DashboardPage = lazy(() => import("../pages/DashboardPage"))
 const ListingPage = lazy(() => import("../pages/ListingPage"))
 const DetailPage = lazy(() => import("../pages/DetailPage"))
@@ -51,7 +47,7 @@ function SmartEntryRedirect() {
   const [redirectPath, setRedirectPath] = useState(null)
 
   useEffect(() => {
-    setRedirectPath("/home")
+    setRedirectPath("/dashboard")
   }, [])
 
   if (!redirectPath) {
@@ -68,12 +64,10 @@ export default function AppRoutes() {
         <Route element={<SmartEntryRedirect />} path="/" />
         <Route element={<InstallApp />} path="/install" />
         <Route element={<HomePage />} path="/home" />
-        <Route element={<LoginPage />} path="/login" />
-        <Route element={<SignupPage />} path="/signup" />
-        <Route element={<RequireInstalledApp><ProtectedRoute><DashboardPage /></ProtectedRoute></RequireInstalledApp>} path="/dashboard" />
-        <Route element={<RequireInstalledApp><ProtectedRoute><ListingPage /></ProtectedRoute></RequireInstalledApp>} path="/tasks" />
-        <Route element={<RequireInstalledApp><ProtectedRoute><DetailPage /></ProtectedRoute></RequireInstalledApp>} path="/tasks/:id" />
-        <Route element={<RequireInstalledApp><ProtectedRoute><ProfilePage /></ProtectedRoute></RequireInstalledApp>} path="/profile" />
+        <Route element={<RequireInstalledApp><DashboardPage /></RequireInstalledApp>} path="/dashboard" />
+        <Route element={<RequireInstalledApp><ListingPage /></RequireInstalledApp>} path="/tasks" />
+        <Route element={<RequireInstalledApp><DetailPage /></RequireInstalledApp>} path="/tasks/:id" />
+        <Route element={<RequireInstalledApp><ProfilePage /></RequireInstalledApp>} path="/profile" />
         <Route element={<Navigate replace to="/" />} path="*" />
       </Routes>
     </Suspense>

@@ -11,10 +11,9 @@ def validate_task_payload(start_time: str, end_time: str):
         )
 
 
-def build_task_payload(data: dict, user_id: str, is_update: bool = False):
+def build_task_payload(data: dict, is_update: bool = False):
     now = datetime.now(timezone.utc)
     payload = dict(data)
-    payload["user_id"] = user_id
     if "description" in payload and payload["description"] is None:
         payload["description"] = ""
     if "days" in payload and payload["days"] is not None:

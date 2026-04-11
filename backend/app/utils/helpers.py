@@ -22,7 +22,6 @@ def serialize_user(user: dict) -> dict:
 def serialize_task(task: dict) -> dict:
     return {
         "id": str(task["_id"]),
-        "user_id": str(task["user_id"]),
         "name": task["name"],
         "description": task.get("description", ""),
         "days": task.get("days") or [],

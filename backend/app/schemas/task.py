@@ -77,7 +77,6 @@ class TaskUpdate(BaseModel):
 
 class TaskResponse(BaseModel):
     id: str
-    user_id: str
     name: str
     description: str
     days: List[str]

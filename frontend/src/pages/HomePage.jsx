@@ -1,6 +1,4 @@
-import { Navigate, Link } from "react-router-dom"
-
-import { useAuth } from "../hooks/useAuth"
+import { Link } from "react-router-dom"
 
 const features = [
   {
@@ -14,21 +12,15 @@ const features = [
     icon: "02",
   },
   {
-    title: "Simple mobile sign-in",
-    description: "Use your mobile number as your account identifier and get back into your planner quickly.",
+    title: "Shared workspace",
+    description: "Everyone sees the same timetable, so planning stays aligned without logins or passwords.",
     icon: "03",
   },
 ]
 
-const highlights = ["Offline-friendly PWA", "Focused day tabs", "Fast mobile sign-in"]
+const highlights = ["Offline-friendly PWA", "Focused day tabs", "Shared planning"]
 
 export default function HomePage() {
-  const { isAuthenticated } = useAuth()
-
-  if (isAuthenticated) {
-    return <Navigate replace to="/dashboard" />
-  }
-
   return (
     <div className="min-h-screen px-4 pb-24 pt-20 sm:px-6 md:px-8 md:pb-16 md:pt-28">
       <section className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
@@ -41,14 +33,14 @@ export default function HomePage() {
             A fresher, calmer timetable UI for planning your week.
           </h1>
           <p className="mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-            Organize classes, routines, and daily tasks in one place with a cleaner dashboard, better mobile spacing, and phone-first account access.
+            Organize classes, routines, and daily tasks in one place with a cleaner dashboard, better mobile spacing, and a single shared view for everyone.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link className="rounded-full bg-primary px-6 py-3 text-center font-semibold text-white shadow-float transition hover:bg-primary-dark" to="/signup">
-              Start Free
+            <Link className="rounded-full bg-primary px-6 py-3 text-center font-semibold text-white shadow-float transition hover:bg-primary-dark" to="/dashboard">
+              Open Dashboard
             </Link>
-            <Link className="rounded-full border border-primary/15 bg-white/80 px-6 py-3 text-center font-semibold text-primary shadow-panel transition hover:bg-white" to="/login">
-              Login
+            <Link className="rounded-full border border-primary/15 bg-white/80 px-6 py-3 text-center font-semibold text-primary shadow-panel transition hover:bg-white" to="/tasks">
+              View Tasks
             </Link>
           </div>
           <div className="mt-6 flex flex-wrap gap-2">

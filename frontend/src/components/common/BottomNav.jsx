@@ -1,7 +1,5 @@
 import { NavLink } from "react-router-dom"
 
-import { useAuth } from "../../hooks/useAuth"
-
 function HomeIcon(props) {
   return (
     <svg aria-hidden="true" fill="none" viewBox="0 0 24 24" {...props}>
@@ -36,12 +34,11 @@ function ProfileIcon(props) {
 }
 
 export default function BottomNav() {
-  const { isAuthenticated } = useAuth()
   const items = [
     { to: "/home", icon: HomeIcon, label: "Home" },
     { to: "/dashboard", icon: PlanIcon, label: "Plan" },
     { to: "/tasks", icon: TasksIcon, label: "Tasks" },
-    { to: isAuthenticated ? "/profile" : "/login", icon: ProfileIcon, label: "Profile" },
+    { to: "/profile", icon: ProfileIcon, label: "Profile" },
   ]
 
   return (
