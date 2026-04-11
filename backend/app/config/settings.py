@@ -8,7 +8,11 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 10080
     FRONTEND_URL: str = "http://localhost:5173"
-    FRONTEND_URLS: str = "http://localhost:5173,http://127.0.0.1:5173"
+    FRONTEND_URLS: str = (
+        "http://localhost:5173,"
+        "http://127.0.0.1:5173,"
+        "https://todoapp-iota-puce.vercel.app"
+    )
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
