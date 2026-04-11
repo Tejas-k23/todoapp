@@ -13,6 +13,7 @@ class Settings(BaseSettings):
         "http://127.0.0.1:5173,"
         "https://todoapp-iota-puce.vercel.app"
     )
+    FRONTEND_ORIGIN_REGEX: str = r"https://.*\.(vercel\.app|onrender\.com)"
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
@@ -26,6 +27,11 @@ class Settings(BaseSettings):
         if self.FRONTEND_URL not in origins:
             origins.append(self.FRONTEND_URL)
         return origins
+
+    @property
+    def frontend_origin_regex(self) -> str | None:
+        value = self.FRONTEND_ORIGIN_REGEX.strip()
+        return value or None
 
 
 settings = Settings()
