@@ -13,6 +13,27 @@ export function getTodayKey() {
   return ["S", "M", "T", "W", "Th", "F", "Sa"][new Date().getDay()]
 }
 
+export function getTodayDateString() {
+  const today = new Date()
+  const year = today.getFullYear()
+  const month = String(today.getMonth() + 1).padStart(2, "0")
+  const day = String(today.getDate()).padStart(2, "0")
+  return `${year}-${month}-${day}`
+}
+
+export function getMonthKey(date) {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  return `${year}-${month}`
+}
+
+export function formatDateLabel(value) {
+  if (!value) return "No date"
+  const [year, month, day] = value.split("-").map(Number)
+  const date = new Date(year, month - 1, day)
+  return date.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })
+}
+
 export function compareTimes(startTime, endTime) {
   return startTime.localeCompare(endTime)
 }

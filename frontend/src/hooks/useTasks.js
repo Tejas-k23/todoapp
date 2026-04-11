@@ -8,10 +8,10 @@ export function useTasks() {
   const [loading, setLoading] = useState(false)
   const { showToast } = useToast()
 
-  const fetchTasks = useCallback(async (day) => {
+  const fetchTasks = useCallback(async (params) => {
     setLoading(true)
     try {
-      const data = await taskService.getAll(day)
+      const data = await taskService.getAll(params)
       setTasks(data)
       return data
     } catch (error) {

@@ -4,8 +4,8 @@ import EmptyState from "../components/common/EmptyState"
 import LoadingSpinner from "../components/common/LoadingSpinner"
 import TaskCard from "../components/tasks/TaskCard"
 import TaskForm from "../components/tasks/TaskForm"
-import { DAYS } from "../utils/constants"
 import { useTasks } from "../hooks/useTasks"
+import { formatDateLabel } from "../utils/timeUtils"
 
 function TaskModal({ title, children, onClose }) {
   return (
@@ -37,10 +37,17 @@ export default function ListingPage() {
     [query, tasks]
   )
 
-  const grouped = useMemo(() => DAYS.map((day) => ({
-    ...day,
-    tasks: filtered.filter((task) => task.days.includes(day.key)),
-  })).filter((section) => section.tasks.length), [filtered])
+  const grouped = useMemo(() => {
+    const map = new Map()
+    filtered.forEach((task) => {
+      const key = task.date || "no-date"
+      if (!map.has(key)) map.set(key, [])
+      map.get(key).push(task)
+    })
+    return Array.from(map.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([key, tasks]) => ({ key, label: formatDateLabel(key === "no-date" ? null : key), tasks }))
+  }, [filtered])
 
   async function handleSubmit(payload) {
     setSubmitting(true)
@@ -77,7 +84,7 @@ export default function ListingPage() {
       <div className="mt-8 space-y-8">
         {grouped.map((section) => (
           <section key={section.key}>
-            <h2 className="mb-3 text-lg font-semibold text-primary">{section.full}</h2>
+            <h2 className="mb-3 text-lg font-semibold text-primary">{section.label}</h2>
             <div className="space-y-4">
               {section.tasks.map((task) => (
                 <TaskCard key={task.id} onDelete={deleteTask} onEdit={(value) => { setEditingTask(value); setModalOpen(true) }} task={task} />

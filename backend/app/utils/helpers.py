@@ -26,10 +26,12 @@ def serialize_task(task: dict) -> dict:
         "name": task["name"],
         "description": task.get("description", ""),
         "days": task.get("days", []),
+        "date": task.get("date"),
         "start_time": task["start_time"],
         "end_time": task["end_time"],
         "notification_enabled": task.get("notification_enabled", False),
         "completed": task.get("completed", False),
+        "priority": task.get("priority", "medium"),
         "created_at": task["created_at"],
         "updated_at": task["updated_at"],
     }

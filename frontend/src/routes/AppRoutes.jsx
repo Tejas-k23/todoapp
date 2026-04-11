@@ -51,7 +51,7 @@ function SmartEntryRedirect() {
   const [redirectPath, setRedirectPath] = useState(null)
 
   useEffect(() => {
-    setRedirectPath(isInstalledPWA() ? "/home" : "/install")
+    setRedirectPath("/home")
   }, [])
 
   if (!redirectPath) {
@@ -67,9 +67,9 @@ export default function AppRoutes() {
       <Routes>
         <Route element={<SmartEntryRedirect />} path="/" />
         <Route element={<InstallApp />} path="/install" />
-        <Route element={<RequireInstalledApp><HomePage /></RequireInstalledApp>} path="/home" />
-        <Route element={<RequireInstalledApp><LoginPage /></RequireInstalledApp>} path="/login" />
-        <Route element={<RequireInstalledApp><SignupPage /></RequireInstalledApp>} path="/signup" />
+        <Route element={<HomePage />} path="/home" />
+        <Route element={<LoginPage />} path="/login" />
+        <Route element={<SignupPage />} path="/signup" />
         <Route element={<RequireInstalledApp><ProtectedRoute><DashboardPage /></ProtectedRoute></RequireInstalledApp>} path="/dashboard" />
         <Route element={<RequireInstalledApp><ProtectedRoute><ListingPage /></ProtectedRoute></RequireInstalledApp>} path="/tasks" />
         <Route element={<RequireInstalledApp><ProtectedRoute><DetailPage /></ProtectedRoute></RequireInstalledApp>} path="/tasks/:id" />

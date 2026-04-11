@@ -1,21 +1,21 @@
 ﻿import { useState } from "react"
 
 import TimePicker from "./TimePicker"
-import { DAYS } from "../../utils/constants"
-import { compareTimes, formatTime } from "../../utils/timeUtils"
+import { compareTimes, formatTime, getTodayDateString } from "../../utils/timeUtils"
 
 const defaultState = {
   name: "",
   description: "",
-  days: [],
+  date: getTodayDateString(),
   start_time: "09:00",
   end_time: "10:00",
   notification_enabled: false,
   completed: false,
+  priority: "medium",
 }
 
 export default function TaskForm({ initialValues, onSubmit, onCancel, submitting = false }) {
-  const [form, setForm] = useState(initialValues || defaultState)
+  const [form, setForm] = useState({ ...defaultState, ...(initialValues || {}) })
   const [errors, setErrors] = useState({})
   const [pickerField, setPickerField] = useState(null)
 
@@ -23,19 +23,10 @@ export default function TaskForm({ initialValues, onSubmit, onCancel, submitting
     setForm((current) => ({ ...current, [field]: value }))
   }
 
-  function toggleDay(dayKey) {
-    setForm((current) => ({
-      ...current,
-      days: current.days.includes(dayKey)
-        ? current.days.filter((day) => day !== dayKey)
-        : [...current.days, dayKey],
-    }))
-  }
-
   function validate() {
     const nextErrors = {}
     if (!form.name.trim()) nextErrors.name = "Task name is required"
-    if (!form.days.length) nextErrors.days = "Choose at least one day"
+    if (!form.date) nextErrors.date = "Choose a date"
     if (compareTimes(form.start_time, form.end_time) >= 0) nextErrors.end_time = "End time must be after start time"
     setErrors(nextErrors)
     return Object.keys(nextErrors).length === 0
@@ -61,18 +52,30 @@ export default function TaskForm({ initialValues, onSubmit, onCancel, submitting
           <textarea className="min-h-24 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-primary" onChange={(event) => updateField('description', event.target.value)} value={form.description} />
         </label>
 
-        <div>
-          <span className="mb-2 block text-sm font-medium text-slate-700">Days</span>
-          <div className="flex flex-wrap gap-2">
-            {DAYS.map((day) => {
-              const active = form.days.includes(day.key)
+        <label className="block">
+          <span className="mb-1 block text-sm font-medium text-slate-700">Priority</span>
+          <div className="grid grid-cols-3 gap-2">
+            {["low", "medium", "high"].map((level) => {
+              const active = form.priority === level
               return (
-                <button key={day.key} className={`rounded-full px-4 py-2 text-sm font-semibold ${active ? 'bg-primary text-white' : 'bg-sand text-primary'}`} onClick={() => toggleDay(day.key)} type="button">{day.key}</button>
+                <button
+                  key={level}
+                  className={`rounded-2xl px-4 py-3 text-sm font-semibold capitalize ${active ? "bg-primary text-white" : "bg-slate-100 text-slate-600"}`}
+                  onClick={() => updateField("priority", level)}
+                  type="button"
+                >
+                  {level}
+                </button>
               )
             })}
           </div>
-          {errors.days ? <p className="mt-1 text-xs text-rose-500">{errors.days}</p> : null}
-        </div>
+        </label>
+
+        <label className="block">
+          <span className="mb-1 block text-sm font-medium text-slate-700">Date</span>
+          <input className="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-primary" onChange={(event) => updateField("date", event.target.value)} type="date" value={form.date} />
+          {errors.date ? <p className="mt-1 text-xs text-rose-500">{errors.date}</p> : null}
+        </label>
 
         <div className="grid grid-cols-2 gap-3">
           <button className="rounded-2xl border border-slate-200 px-4 py-3 text-left" onClick={() => setPickerField('start_time')} type="button">

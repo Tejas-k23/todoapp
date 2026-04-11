@@ -13,10 +13,19 @@ router = APIRouter(prefix="/tasks", tags=["tasks"])
 
 
 @router.get("/", response_model=List[TaskResponse])
-async def get_tasks(day: Optional[str] = None, current_user=Depends(get_current_user)):
+async def get_tasks(
+    day: Optional[str] = None,
+    date: Optional[str] = None,
+    month: Optional[str] = None,
+    current_user=Depends(get_current_user),
+):
     db = get_db()
     query = {"user_id": str(current_user["_id"])}
-    if day:
+    if date:
+        query["date"] = date
+    elif month:
+        query["date"] = {"$regex": f"^{month}-"}
+    elif day:
         query["days"] = {"$in": [day]}
     tasks = await db.tasks.find(query).sort("start_time", 1).to_list(1000)
     return [serialize_task(task) for task in tasks]

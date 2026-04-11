@@ -1,14 +1,17 @@
 ﻿import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
-import { DAYS } from "../../utils/constants"
-import { formatTimeRange } from "../../utils/timeUtils"
+import { formatDateLabel, formatTimeRange } from "../../utils/timeUtils"
 
 export default function TaskCard({ task, onEdit, onDelete }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const navigate = useNavigate()
 
-  const daySet = new Set(task.days)
+  const priorityTone = {
+    low: "bg-slate-100 text-slate-500",
+    medium: "bg-amber-50 text-amber-600",
+    high: "bg-rose-50 text-rose-600",
+  }
 
   function handleDelete(event) {
     event.stopPropagation()
@@ -23,6 +26,7 @@ export default function TaskCard({ task, onEdit, onDelete }) {
         <div>
           <h3 className={`text-base font-semibold text-slate-900 ${task.completed ? "line-through decoration-slate-300" : ""}`}>{task.name}</h3>
           <p className="mt-1 text-sm text-primary">🕐 {formatTimeRange(task.start_time, task.end_time)}</p>
+          {task.date ? <p className="mt-1 text-xs text-slate-500">{formatDateLabel(task.date)}</p> : null}
         </div>
         <div className="relative">
           <button className="rounded-full p-2 text-slate-400 hover:bg-slate-100" onClick={(event) => { event.stopPropagation(); setMenuOpen((open) => !open) }} type="button">⋯</button>
@@ -35,13 +39,11 @@ export default function TaskCard({ task, onEdit, onDelete }) {
         </div>
       </div>
       <p className="mt-3 truncate text-sm text-slate-500">{task.description || "No description added yet."}</p>
-      <div className="mt-4 flex items-center justify-between">
-        <div className="flex gap-1.5">
-          {DAYS.map((day) => (
-            <span key={day.key} className={`h-2.5 w-2.5 rounded-full ${daySet.has(day.key) ? "bg-primary" : "bg-slate-200"}`} title={day.full} />
-          ))}
-        </div>
+      <div className="mt-4 flex items-center justify-end">
         <div className="flex items-center gap-2">
+          <span className={`rounded-full px-2 py-1 text-xs font-semibold capitalize ${priorityTone[task.priority] || priorityTone.medium}`}>
+            {task.priority || "medium"}
+          </span>
           {task.completed ? <span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-600">Completed</span> : null}
           {task.notification_enabled ? <span className="text-xs font-medium text-accent">Alerts on</span> : null}
         </div>

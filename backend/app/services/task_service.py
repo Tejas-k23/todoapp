@@ -24,5 +24,8 @@ def build_task_payload(data: dict, user_id: str, is_update: bool = False):
         payload.setdefault("description", "")
         payload.setdefault("notification_enabled", False)
         payload.setdefault("completed", False)
+        payload.setdefault("priority", "medium")
+        payload.setdefault("days", [])
+        payload.setdefault("date", None)
         payload["created_at"] = now
     return payload

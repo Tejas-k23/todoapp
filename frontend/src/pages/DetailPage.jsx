@@ -5,8 +5,7 @@ import LoadingSpinner from "../components/common/LoadingSpinner"
 import TaskForm from "../components/tasks/TaskForm"
 import { taskService } from "../services/taskService"
 import { useToast } from "../hooks/useToast"
-import { DAYS } from "../utils/constants"
-import { formatTimeRange } from "../utils/timeUtils"
+import { formatDateLabel, formatTimeRange } from "../utils/timeUtils"
 
 function TaskModal({ title, children, onClose }) {
   return (
@@ -72,8 +71,8 @@ export default function DetailPage() {
     return <LoadingSpinner />
   }
 
-  const selectedDays = DAYS.filter((day) => task.days.includes(day.key)).map((day) => day.full).join(", ")
   const completionLabel = task.completed ? "Completed" : "Pending"
+  const priorityLabel = (task.priority || "medium").toUpperCase()
 
   return (
     <div className="mx-auto max-w-3xl px-4 pb-28 pt-8 md:px-6 md:pb-10 md:pt-24">
@@ -93,8 +92,9 @@ export default function DetailPage() {
         </div>
 
         <dl className="mt-8 grid gap-4 md:grid-cols-2">
-          <div className="rounded-2xl bg-slate-50 p-4"><dt className="text-xs uppercase tracking-[0.2em] text-slate-400">Days</dt><dd className="mt-2 font-semibold text-slate-900">{selectedDays}</dd></div>
+          <div className="rounded-2xl bg-slate-50 p-4"><dt className="text-xs uppercase tracking-[0.2em] text-slate-400">Date</dt><dd className="mt-2 font-semibold text-slate-900">{formatDateLabel(task.date)}</dd></div>
           <div className="rounded-2xl bg-slate-50 p-4"><dt className="text-xs uppercase tracking-[0.2em] text-slate-400">Time</dt><dd className="mt-2 font-semibold text-slate-900">{formatTimeRange(task.start_time, task.end_time)}</dd></div>
+          <div className="rounded-2xl bg-slate-50 p-4"><dt className="text-xs uppercase tracking-[0.2em] text-slate-400">Priority</dt><dd className="mt-2 font-semibold text-slate-900">{priorityLabel}</dd></div>
         </dl>
 
         <div className="mt-8 flex flex-wrap gap-3">

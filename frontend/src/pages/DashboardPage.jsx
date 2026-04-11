@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
-import DayTabs from "../components/tasks/DayTabs"
 import EmptyState from "../components/common/EmptyState"
 import LoadingSpinner from "../components/common/LoadingSpinner"
 import TaskCard from "../components/tasks/TaskCard"
 import TaskForm from "../components/tasks/TaskForm"
 import { useTasks } from "../hooks/useTasks"
-import { getTodayKey } from "../utils/timeUtils"
+import { taskService } from "../services/taskService"
+import { formatDateLabel, getMonthKey, getTodayDateString } from "../utils/timeUtils"
 
 function TaskModal({ title, children, onClose }) {
   return (
@@ -22,9 +22,73 @@ function TaskModal({ title, children, onClose }) {
   )
 }
 
+function MonthGrid({ currentMonth, monthTasks, selectedDate, onSelectDate }) {
+  const year = currentMonth.getFullYear()
+  const month = currentMonth.getMonth()
+  const firstDay = new Date(year, month, 1).getDay()
+  const daysInMonth = new Date(year, month + 1, 0).getDate()
+  const leading = Array.from({ length: firstDay }, () => null)
+  const days = Array.from({ length: daysInMonth }, (_, index) => index + 1)
+  const cells = [...leading, ...days]
+  const counts = useMemo(() => {
+    const map = new Map()
+    monthTasks.forEach((task) => {
+      if (task.date) {
+        map.set(task.date, (map.get(task.date) || 0) + 1)
+      }
+    })
+    return map
+  }, [monthTasks])
+
+  function toDateString(dayNumber) {
+    const monthValue = String(month + 1).padStart(2, "0")
+    const dayValue = String(dayNumber).padStart(2, "0")
+    return `${year}-${monthValue}-${dayValue}`
+  }
+
+  const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+
+  return (
+    <div className="mt-4">
+      <div className="grid grid-cols-7 gap-2 text-xs font-semibold text-slate-400">
+        {weekdays.map((day) => (
+          <span key={day} className="text-center">{day}</span>
+        ))}
+      </div>
+      <div className="mt-2 grid grid-cols-7 gap-2">
+        {cells.map((dayNumber, index) => {
+          if (!dayNumber) {
+            return <span key={`empty-${index}`} />
+          }
+          const dateValue = toDateString(dayNumber)
+          const isSelected = dateValue === selectedDate
+          const count = counts.get(dateValue) || 0
+          return (
+            <button
+              key={dateValue}
+              className={`relative rounded-2xl px-2 py-3 text-sm font-semibold transition ${isSelected ? "bg-primary text-white shadow-float" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+              onClick={() => onSelectDate(dateValue)}
+              type="button"
+            >
+              <span>{dayNumber}</span>
+              {count ? <span className={`absolute right-1 top-1 rounded-full px-1.5 text-[10px] ${isSelected ? "bg-white/20 text-white" : "bg-white text-primary"}`}>{count}</span> : null}
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 export default function DashboardPage() {
-  const today = getTodayKey()
-  const [selectedDay, setSelectedDay] = useState(today)
+  const todayDate = getTodayDateString()
+  const [selectedDate, setSelectedDate] = useState(todayDate)
+  const [currentMonth, setCurrentMonth] = useState(() => {
+    const now = new Date()
+    return new Date(now.getFullYear(), now.getMonth(), 1)
+  })
+  const [monthTasks, setMonthTasks] = useState([])
+  const [loadingMonth, setLoadingMonth] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
   const [editingTask, setEditingTask] = useState(null)
   const [submitting, setSubmitting] = useState(false)
@@ -33,8 +97,23 @@ export default function DashboardPage() {
   const pendingCount = tasks.length - completedCount
 
   useEffect(() => {
-    fetchTasks(selectedDay)
-  }, [fetchTasks, selectedDay])
+    fetchTasks({ date: selectedDate })
+  }, [fetchTasks, selectedDate])
+
+  useEffect(() => {
+    async function loadMonth() {
+      setLoadingMonth(true)
+      try {
+        const monthKey = getMonthKey(currentMonth)
+        const data = await taskService.getAll({ month: monthKey })
+        setMonthTasks(data)
+      } finally {
+        setLoadingMonth(false)
+      }
+    }
+
+    loadMonth()
+  }, [currentMonth])
 
   async function handleSubmit(payload) {
     setSubmitting(true)
@@ -46,7 +125,7 @@ export default function DashboardPage() {
       }
       setModalOpen(false)
       setEditingTask(null)
-      fetchTasks(selectedDay)
+      fetchTasks({ date: selectedDate })
     } finally {
       setSubmitting(false)
     }
@@ -74,7 +153,7 @@ export default function DashboardPage() {
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3 sm:flex">
-            <button className="rounded-full border border-primary/10 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-panel transition hover:border-primary/20 hover:text-primary" onClick={() => fetchTasks(selectedDay)} type="button">
+            <button className="rounded-full border border-primary/10 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-panel transition hover:border-primary/20 hover:text-primary" onClick={() => fetchTasks({ date: selectedDate })} type="button">
               Refresh
             </button>
             <button className="rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-white shadow-float transition hover:bg-primary-dark" onClick={openCreate} type="button">
@@ -84,11 +163,27 @@ export default function DashboardPage() {
         </div>
 
         <div className="mt-6 grid gap-4 lg:grid-cols-[1.35fr_0.65fr] lg:items-start">
-          <div className="rounded-[1.5rem] bg-white/85 p-3 shadow-panel">
-            <DayTabs onDayChange={setSelectedDay} selectedDay={selectedDay} />
+          <div className="rounded-[1.5rem] bg-white/85 p-4 shadow-panel">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-[0.28em] text-slate-400">Month view</p>
+                <p className="mt-1 text-lg font-semibold text-ink">{currentMonth.toLocaleDateString(undefined, { month: "long", year: "numeric" })}</p>
+              </div>
+              <div className="flex gap-2">
+                <button className="rounded-full border border-slate-200 px-3 py-1 text-sm" onClick={() => setCurrentMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1))} type="button">Prev</button>
+                <button className="rounded-full border border-slate-200 px-3 py-1 text-sm" onClick={() => setCurrentMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1))} type="button">Next</button>
+              </div>
+            </div>
+            <MonthGrid
+              currentMonth={currentMonth}
+              monthTasks={monthTasks}
+              onSelectDate={setSelectedDate}
+              selectedDate={selectedDate}
+            />
+            {loadingMonth ? <p className="mt-3 text-xs text-slate-400">Loading month...</p> : null}
           </div>
           <div className="rounded-[1.5rem] bg-[linear-gradient(145deg,#172033_0%,#0f766e_100%)] p-5 text-white shadow-panel">
-            <p className="text-xs uppercase tracking-[0.28em] text-white/60">Focus for {selectedDay}</p>
+            <p className="text-xs uppercase tracking-[0.28em] text-white/60">Focus for {formatDateLabel(selectedDate)}</p>
             <p className="mt-2 text-2xl font-semibold">{tasks.length} task{tasks.length === 1 ? "" : "s"} lined up</p>
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
               <div className="rounded-2xl bg-white/10 px-3 py-3">
@@ -104,7 +199,7 @@ export default function DashboardPage() {
                 <p className="mt-2 text-lg font-semibold">{tasks.length}</p>
               </div>
             </div>
-            <p className="mt-4 text-sm leading-6 text-white/75">Use the floating action on mobile or the Add Task button above to keep your week current.</p>
+            <p className="mt-4 text-sm leading-6 text-white/75">Use the floating action on mobile or the Add Task button above to keep your month current.</p>
           </div>
         </div>
       </section>
@@ -113,7 +208,7 @@ export default function DashboardPage() {
         {loading ? <LoadingSpinner /> : null}
         {!loading && !tasks.length ? (
           <div className="glass-panel rounded-[2rem]">
-            <EmptyState icon="???" message="No tasks for this day" subMessage="Tap the add button to create a new block and keep this day organized." />
+            <EmptyState icon="???" message="No tasks for this date" subMessage="Tap the add button to create a new block and keep this date organized." />
           </div>
         ) : null}
         {!loading && tasks.map((task) => (
