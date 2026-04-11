@@ -25,7 +25,7 @@ def serialize_task(task: dict) -> dict:
         "user_id": str(task["user_id"]),
         "name": task["name"],
         "description": task.get("description", ""),
-        "days": task.get("days", []),
+        "days": task.get("days") or [],
         "date": task.get("date"),
         "start_time": task["start_time"],
         "end_time": task["end_time"],
