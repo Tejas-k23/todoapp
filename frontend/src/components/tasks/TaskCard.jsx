@@ -18,10 +18,10 @@ export default function TaskCard({ task, onEdit, onDelete }) {
   }
 
   return (
-    <article className="cursor-pointer rounded-3xl bg-white p-4 shadow-sm ring-1 ring-slate-100 transition hover:-translate-y-0.5 hover:shadow-md" onClick={() => navigate(`/tasks/${task.id}`)}>
+    <article className={`cursor-pointer rounded-3xl bg-white p-4 shadow-sm ring-1 ring-slate-100 transition hover:-translate-y-0.5 hover:shadow-md ${task.completed ? "opacity-80" : ""}`} onClick={() => navigate(`/tasks/${task.id}`)}>
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h3 className="text-base font-semibold text-slate-900">{task.name}</h3>
+          <h3 className={`text-base font-semibold text-slate-900 ${task.completed ? "line-through decoration-slate-300" : ""}`}>{task.name}</h3>
           <p className="mt-1 text-sm text-primary">🕐 {formatTimeRange(task.start_time, task.end_time)}</p>
         </div>
         <div className="relative">
@@ -41,7 +41,10 @@ export default function TaskCard({ task, onEdit, onDelete }) {
             <span key={day.key} className={`h-2.5 w-2.5 rounded-full ${daySet.has(day.key) ? "bg-primary" : "bg-slate-200"}`} title={day.full} />
           ))}
         </div>
-        {task.notification_enabled ? <span className="text-xs font-medium text-accent">Alerts on</span> : null}
+        <div className="flex items-center gap-2">
+          {task.completed ? <span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-600">Completed</span> : null}
+          {task.notification_enabled ? <span className="text-xs font-medium text-accent">Alerts on</span> : null}
+        </div>
       </div>
     </article>
   )

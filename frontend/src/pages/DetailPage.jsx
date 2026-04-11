@@ -73,6 +73,7 @@ export default function DetailPage() {
   }
 
   const selectedDays = DAYS.filter((day) => task.days.includes(day.key)).map((day) => day.full).join(", ")
+  const completionLabel = task.completed ? "Completed" : "Pending"
 
   return (
     <div className="mx-auto max-w-3xl px-4 pb-28 pt-8 md:px-6 md:pb-10 md:pt-24">
@@ -85,7 +86,10 @@ export default function DetailPage() {
             <h1 className="mt-3 text-3xl font-semibold text-slate-900">{task.name}</h1>
             <p className="mt-3 text-sm leading-7 text-slate-500">{task.description || "No description added for this task."}</p>
           </div>
-          <div className="rounded-full bg-sand px-4 py-2 text-sm font-semibold text-primary">{task.notification_enabled ? 'Alerts on' : 'Alerts off'}</div>
+          <div className="flex flex-col items-end gap-2">
+            <div className="rounded-full bg-sand px-4 py-2 text-sm font-semibold text-primary">{task.notification_enabled ? 'Alerts on' : 'Alerts off'}</div>
+            <div className={`rounded-full px-4 py-2 text-xs font-semibold ${task.completed ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"}`}>{completionLabel}</div>
+          </div>
         </div>
 
         <dl className="mt-8 grid gap-4 md:grid-cols-2">
@@ -93,8 +97,11 @@ export default function DetailPage() {
           <div className="rounded-2xl bg-slate-50 p-4"><dt className="text-xs uppercase tracking-[0.2em] text-slate-400">Time</dt><dd className="mt-2 font-semibold text-slate-900">{formatTimeRange(task.start_time, task.end_time)}</dd></div>
         </dl>
 
-        <div className="mt-8 flex gap-3">
+        <div className="mt-8 flex flex-wrap gap-3">
           <button className="rounded-full bg-primary px-5 py-3 font-semibold text-white" onClick={() => setModalOpen(true)} type="button">Edit</button>
+          <button className="rounded-full bg-white px-5 py-3 font-semibold text-slate-700 shadow-sm ring-1 ring-slate-100" onClick={() => handleUpdate({ completed: !task.completed })} type="button">
+            {task.completed ? "Mark as pending" : "Mark as completed"}
+          </button>
           <button className="rounded-full bg-rose-50 px-5 py-3 font-semibold text-rose-600" onClick={handleDelete} type="button">Delete</button>
         </div>
       </div>

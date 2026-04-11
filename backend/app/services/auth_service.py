@@ -44,6 +44,8 @@ async def create_user(name: str, mobile_number: str, password: str):
         "name_lower": normalized_name.lower(),
         "mobile_number": mobile_number,
         "password": password,
+        "email": None,
+        "instagram": None,
         "created_at": now,
         "updated_at": now,
     }

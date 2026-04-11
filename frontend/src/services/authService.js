@@ -13,9 +13,9 @@ export const authService = {
     return data
   },
 
-  async login(name, password) {
+  async login(identifier, password) {
     const { data } = await api.post("/auth/login", {
-      name,
+      identifier,
       password,
     })
     storage.set("token", data.access_token)
@@ -26,6 +26,20 @@ export const authService = {
   async getMe() {
     const { data } = await api.get("/auth/me")
     storage.set("user", data)
+    return data
+  },
+
+  async updateProfile(payload) {
+    const { data } = await api.put("/auth/profile", payload)
+    storage.set("user", data)
+    return data
+  },
+
+  async changePassword(currentPassword, newPassword) {
+    const { data } = await api.put("/auth/password", {
+      current_password: currentPassword,
+      new_password: newPassword,
+    })
     return data
   },
 

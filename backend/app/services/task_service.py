@@ -23,5 +23,6 @@ def build_task_payload(data: dict, user_id: str, is_update: bool = False):
     if not is_update:
         payload.setdefault("description", "")
         payload.setdefault("notification_enabled", False)
+        payload.setdefault("completed", False)
         payload["created_at"] = now
     return payload

@@ -13,6 +13,8 @@ def serialize_user(user: dict) -> dict:
         "id": str(user["_id"]),
         "name": user["name"],
         "mobile_number": user["mobile_number"],
+        "email": user.get("email"),
+        "instagram": user.get("instagram"),
         "created_at": user["created_at"],
     }
 
@@ -27,6 +29,7 @@ def serialize_task(task: dict) -> dict:
         "start_time": task["start_time"],
         "end_time": task["end_time"],
         "notification_enabled": task.get("notification_enabled", False),
+        "completed": task.get("completed", False),
         "created_at": task["created_at"],
         "updated_at": task["updated_at"],
     }

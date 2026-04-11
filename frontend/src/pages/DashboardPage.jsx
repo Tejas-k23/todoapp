@@ -29,6 +29,8 @@ export default function DashboardPage() {
   const [editingTask, setEditingTask] = useState(null)
   const [submitting, setSubmitting] = useState(false)
   const { tasks, loading, fetchTasks, createTask, updateTask, deleteTask } = useTasks()
+  const completedCount = tasks.filter((task) => task.completed).length
+  const pendingCount = tasks.length - completedCount
 
   useEffect(() => {
     fetchTasks(selectedDay)
@@ -88,7 +90,21 @@ export default function DashboardPage() {
           <div className="rounded-[1.5rem] bg-[linear-gradient(145deg,#172033_0%,#0f766e_100%)] p-5 text-white shadow-panel">
             <p className="text-xs uppercase tracking-[0.28em] text-white/60">Focus for {selectedDay}</p>
             <p className="mt-2 text-2xl font-semibold">{tasks.length} task{tasks.length === 1 ? "" : "s"} lined up</p>
-            <p className="mt-2 text-sm leading-6 text-white/75">Use the floating action on mobile or the Add Task button above to keep your week current.</p>
+            <div className="mt-4 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl bg-white/10 px-3 py-3">
+                <p className="text-xs uppercase tracking-[0.2em] text-white/60">Pending</p>
+                <p className="mt-2 text-lg font-semibold">{pendingCount}</p>
+              </div>
+              <div className="rounded-2xl bg-white/10 px-3 py-3">
+                <p className="text-xs uppercase tracking-[0.2em] text-white/60">Completed</p>
+                <p className="mt-2 text-lg font-semibold">{completedCount}</p>
+              </div>
+              <div className="rounded-2xl bg-white/10 px-3 py-3">
+                <p className="text-xs uppercase tracking-[0.2em] text-white/60">Total</p>
+                <p className="mt-2 text-lg font-semibold">{tasks.length}</p>
+              </div>
+            </div>
+            <p className="mt-4 text-sm leading-6 text-white/75">Use the floating action on mobile or the Add Task button above to keep your week current.</p>
           </div>
         </div>
       </section>

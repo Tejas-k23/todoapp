@@ -16,6 +16,7 @@ export default function Navbar() {
           <NavLink className={navItemClass} to="/home">Home</NavLink>
           <NavLink className={navItemClass} to="/dashboard">Dashboard</NavLink>
           <NavLink className={navItemClass} to="/tasks">Tasks</NavLink>
+          {isAuthenticated ? <NavLink className={navItemClass} to="/profile">Profile</NavLink> : null}
         </nav>
         <div className="flex items-center gap-3">
           {isAuthenticated ? (

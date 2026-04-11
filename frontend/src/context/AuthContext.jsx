@@ -30,10 +30,10 @@ export function AuthProvider({ children }) {
     syncUser()
   }, [])
 
-  async function login(name, password) {
+  async function login(identifier, password) {
     setLoading(true)
     try {
-      const data = await authService.login(name, password)
+      const data = await authService.login(identifier, password)
       setUser(data.user)
       return data
     } finally {
@@ -57,8 +57,28 @@ export function AuthProvider({ children }) {
     authService.logout()
   }
 
+  async function updateProfile(payload) {
+    setLoading(true)
+    try {
+      const userData = await authService.updateProfile(payload)
+      setUser(userData)
+      return userData
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function changePassword(currentPassword, newPassword) {
+    setLoading(true)
+    try {
+      return await authService.changePassword(currentPassword, newPassword)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, signup, logout, isAuthenticated: Boolean(user) }}>
+    <AuthContext.Provider value={{ user, loading, login, signup, logout, updateProfile, changePassword, isAuthenticated: Boolean(user) }}>
       {children}
     </AuthContext.Provider>
   )

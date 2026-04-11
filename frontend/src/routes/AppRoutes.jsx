@@ -11,6 +11,7 @@ const SignupPage = lazy(() => import("../pages/SignupPage"))
 const DashboardPage = lazy(() => import("../pages/DashboardPage"))
 const ListingPage = lazy(() => import("../pages/ListingPage"))
 const DetailPage = lazy(() => import("../pages/DetailPage"))
+const ProfilePage = lazy(() => import("../pages/ProfilePage"))
 
 function isInstalledPWA() {
   return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true
@@ -72,6 +73,7 @@ export default function AppRoutes() {
         <Route element={<RequireInstalledApp><ProtectedRoute><DashboardPage /></ProtectedRoute></RequireInstalledApp>} path="/dashboard" />
         <Route element={<RequireInstalledApp><ProtectedRoute><ListingPage /></ProtectedRoute></RequireInstalledApp>} path="/tasks" />
         <Route element={<RequireInstalledApp><ProtectedRoute><DetailPage /></ProtectedRoute></RequireInstalledApp>} path="/tasks/:id" />
+        <Route element={<RequireInstalledApp><ProtectedRoute><ProfilePage /></ProtectedRoute></RequireInstalledApp>} path="/profile" />
         <Route element={<Navigate replace to="/" />} path="*" />
       </Routes>
     </Suspense>

@@ -11,6 +11,7 @@ const defaultState = {
   start_time: "09:00",
   end_time: "10:00",
   notification_enabled: false,
+  completed: false,
 }
 
 export default function TaskForm({ initialValues, onSubmit, onCancel, submitting = false }) {
@@ -91,6 +92,14 @@ export default function TaskForm({ initialValues, onSubmit, onCancel, submitting
             <span className="text-xs text-slate-500">Enable reminders for this task</span>
           </div>
           <input checked={form.notification_enabled} onChange={(event) => updateField('notification_enabled', event.target.checked)} type="checkbox" />
+        </label>
+
+        <label className="flex items-center justify-between rounded-2xl bg-slate-50 px-4 py-3">
+          <div>
+            <span className="block text-sm font-medium text-slate-700">Completed</span>
+            <span className="text-xs text-slate-500">Mark this task as done</span>
+          </div>
+          <input checked={form.completed} onChange={(event) => updateField('completed', event.target.checked)} type="checkbox" />
         </label>
 
         <div className="flex gap-3 pt-2">

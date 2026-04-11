@@ -13,6 +13,7 @@ class TaskCreate(BaseModel):
     start_time: str
     end_time: str
     notification_enabled: Optional[bool] = False
+    completed: Optional[bool] = False
 
     @field_validator("days")
     @classmethod
@@ -31,6 +32,7 @@ class TaskUpdate(BaseModel):
     start_time: Optional[str] = None
     end_time: Optional[str] = None
     notification_enabled: Optional[bool] = None
+    completed: Optional[bool] = None
 
     @field_validator("days")
     @classmethod
@@ -53,5 +55,6 @@ class TaskResponse(BaseModel):
     start_time: str
     end_time: str
     notification_enabled: bool
+    completed: bool
     created_at: datetime
     updated_at: datetime

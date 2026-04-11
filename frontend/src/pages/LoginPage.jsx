@@ -30,7 +30,7 @@ export default function LoginPage() {
           <p className="text-xs font-semibold uppercase tracking-[0.35em] text-white/70">Study Planner Login</p>
           <h1 className="mt-4 text-3xl font-semibold leading-tight sm:text-4xl">Sign in with your name and password.</h1>
           <p className="mt-4 max-w-md text-sm leading-7 text-white/80 sm:text-base">
-            Use the same name and password you set during signup to access your dashboard.
+            Use the same name or mobile number and password you set during signup to access your dashboard.
           </p>
           <div className="mt-8 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
             {[
