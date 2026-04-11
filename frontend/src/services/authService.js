@@ -2,21 +2,21 @@ import api from "./api"
 import { storage } from "../utils/storage"
 
 export const authService = {
-  async signup(name, mobileNumber, verificationToken) {
+  async signup(name, mobileNumber, password) {
     const { data } = await api.post("/auth/signup", {
       name,
       mobile_number: mobileNumber,
-      verification_token: verificationToken,
+      password,
     })
     storage.set("token", data.access_token)
     storage.set("user", data.user)
     return data
   },
 
-  async login(mobileNumber, verificationToken) {
+  async login(name, password) {
     const { data } = await api.post("/auth/login", {
-      mobile_number: mobileNumber,
-      verification_token: verificationToken,
+      name,
+      password,
     })
     storage.set("token", data.access_token)
     storage.set("user", data.user)

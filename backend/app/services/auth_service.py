@@ -2,7 +2,6 @@ from datetime import datetime, timedelta, timezone
 
 from bson import ObjectId
 from jose import jwt
-from pymongo import ReturnDocument
 
 from app.config.database import get_db
 from app.config.settings import settings
@@ -26,37 +25,28 @@ async def get_user_by_mobile_number(mobile_number: str):
     return await db.users.find_one({"mobile_number": mobile_number})
 
 
+async def get_user_by_name(name: str):
+    db = get_db()
+    return await db.users.find_one({"name_lower": name.strip().lower()})
+
+
 async def get_user_by_id(user_id: str):
     db = get_db()
     return await db.users.find_one({"_id": ObjectId(user_id)})
 
 
-async def create_user(name: str, mobile_number: str, verification_token: str):
+async def create_user(name: str, mobile_number: str, password: str):
     db = get_db()
     now = datetime.now(timezone.utc)
+    normalized_name = name.strip()
     user = {
-        "name": name.strip(),
+        "name": normalized_name,
+        "name_lower": normalized_name.lower(),
         "mobile_number": mobile_number,
-        "last_verification_token": verification_token,
-        "auth_provider": "msg91-otp",
+        "password": password,
         "created_at": now,
         "updated_at": now,
     }
     result = await db.users.insert_one(user)
     user["_id"] = result.inserted_id
     return user
-
-
-async def update_user_verification(user_id: str, verification_token: str):
-    db = get_db()
-    now = datetime.now(timezone.utc)
-    return await db.users.find_one_and_update(
-        {"_id": ObjectId(user_id)},
-        {
-            "$set": {
-                "last_verification_token": verification_token,
-                "updated_at": now,
-            }
-        },
-        return_document=ReturnDocument.AFTER,
-    )

@@ -30,10 +30,10 @@ export function AuthProvider({ children }) {
     syncUser()
   }, [])
 
-  async function login(mobileNumber, verificationToken) {
+  async function login(name, password) {
     setLoading(true)
     try {
-      const data = await authService.login(mobileNumber, verificationToken)
+      const data = await authService.login(name, password)
       setUser(data.user)
       return data
     } finally {
@@ -41,10 +41,10 @@ export function AuthProvider({ children }) {
     }
   }
 
-  async function signup(name, mobileNumber, verificationToken) {
+  async function signup(name, mobileNumber, password) {
     setLoading(true)
     try {
-      const data = await authService.signup(name, mobileNumber, verificationToken)
+      const data = await authService.signup(name, mobileNumber, password)
       setUser(data.user)
       return data
     } finally {

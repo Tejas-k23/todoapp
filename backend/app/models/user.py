@@ -3,9 +3,9 @@
 # {
 #   "_id": ObjectId,
 #   "name": str,
+#   "name_lower": str,
 #   "mobile_number": str (unique),
-#   "last_verification_token": str,
-#   "auth_provider": str,
+#   "password": str,
 #   "created_at": datetime,
 #   "updated_at": datetime
 # }

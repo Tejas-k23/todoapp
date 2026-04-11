@@ -13,7 +13,7 @@ def normalize_mobile_number(value: str) -> str:
 class UserSignup(BaseModel):
     name: str = Field(..., min_length=2, max_length=80)
     mobile_number: str
-    verification_token: str = Field(..., min_length=3)
+    password: str = Field(..., min_length=4, max_length=200)
 
     @field_validator("mobile_number")
     @classmethod
@@ -22,8 +22,8 @@ class UserSignup(BaseModel):
 
 
 class UserLogin(BaseModel):
-    mobile_number: str
-    verification_token: str = Field(..., min_length=3)
+    name: str = Field(..., min_length=2, max_length=80)
+    password: str = Field(..., min_length=4, max_length=200)
 
     @field_validator("mobile_number")
     @classmethod
