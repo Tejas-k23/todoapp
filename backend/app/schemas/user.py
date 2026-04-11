@@ -25,11 +25,6 @@ class UserLogin(BaseModel):
     name: str = Field(..., min_length=2, max_length=80)
     password: str = Field(..., min_length=4, max_length=200)
 
-    @field_validator("mobile_number")
-    @classmethod
-    def validate_mobile_number(cls, value: str):
-        return normalize_mobile_number(value)
-
 
 class UserResponse(BaseModel):
     id: str
