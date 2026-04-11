@@ -10,6 +10,12 @@ async def connect_db():
     global client, db
     client = AsyncIOMotorClient(settings.MONGO_URI)
     db = client[settings.DB_NAME]
+    # Clean up legacy unique index that blocks inserts when email is missing.
+    indexes = [index async for index in db.users.list_indexes()]
+    for index in indexes:
+        if index.get("name") == "email_1":
+            await db.users.drop_index("email_1")
+            break
     await db.users.create_index("mobile_number", unique=True)
     await db.tasks.create_index([("user_id", 1), ("days", 1)])
     await db.tasks.create_index([("user_id", 1), ("start_time", 1)])
